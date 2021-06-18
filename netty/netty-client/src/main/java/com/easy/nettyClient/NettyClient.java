@@ -1,6 +1,8 @@
 package com.easy.nettyClient;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
@@ -33,7 +35,11 @@ public class NettyClient {
      * 发送消息
      */
     public void sendMsg(String msg) {
-        socketChannel.writeAndFlush(msg);
+        byte[] bytes = msg.getBytes();
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+        socketChannel.writeAndFlush(buf);
     }
 
     @PostConstruct
